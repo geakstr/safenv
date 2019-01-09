@@ -1,0 +1,35 @@
+{
+  "name": "safenv",
+  "version": "0.1.0",
+  "description": "Tools for building typesafe apps",
+  "author": "Dmitry Kharitonov <geakstr@me.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/geakstr/safenv.git"
+  },
+  "main": "index.js",
+  "module": "index.es.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "dist": "npm run build && npm publish dist",
+    "build": "rm -rf ./dist && mkdir ./dist && cp ./package*.json ./dist && rollup --config"
+  },
+  "peerDependencies": {
+    "immer": "^1.10.0",
+    "react-redux": "66.0.0",
+    "redux": "^4.0.0",
+    "typesafe-actions": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/react-redux": "6.0.12",
+    "immer": "1.10.0",
+    "react-redux": "6.0.0",
+    "redux": "4.0.1",
+    "rollup": "0.68.0",
+    "rollup-plugin-babel-minify": "6.2.0",
+    "rollup-plugin-typescript2": "0.18.1",
+    "typesafe-actions": "3.0.0",
+    "typescript": "3.2.2"
+  }
+}
