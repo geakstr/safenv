@@ -1,6 +1,6 @@
 {
   "name": "safenv",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Tools for building typesafe apps",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",

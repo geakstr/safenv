@@ -66,6 +66,6 @@ const check = (types: string[]) => {
 };
 
 interface Resolvers<Body, Err> {
-  readonly onSuccess?: (body: Body, response: Response) => Promise<Body>;
-  readonly onFailure?: (error: Err, response: Response) => Promise<Err>;
+  readonly onSuccess?: (response: Response) => Promise<Body>;
+  readonly onFailure?: (response: Response) => Promise<Err>;
 }
