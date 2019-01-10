@@ -40,15 +40,15 @@ export const createRequestAction = <
         readonly url: URL | string;
         readonly config?: RequestInit;
       };
-      readonly callbacks?: Callbacks<SuccessResponse, ErrorResponse>;
+      readonly resolvers?: Resolvers;
     },
     {
-      readonly response: SuccessResponse;
-      readonly callbacks?: Callbacks<SuccessResponse, ErrorResponse>;
+      readonly response: Response;
+      readonly body: SuccessResponse;
     },
     {
+      readonly response: Response;
       readonly error: ErrorResponse;
-      readonly callbacks?: Callbacks<SuccessResponse, ErrorResponse>;
     }
   >();
 };
@@ -65,7 +65,7 @@ const check = (types: string[]) => {
   return types;
 };
 
-interface Callbacks<SuccessResponse, ErrorResponse> {
-  readonly onSuccess?: (response: SuccessResponse) => void;
-  readonly onFailure?: (error: ErrorResponse) => void;
+interface Resolvers {
+  readonly onSuccess?: (response: Response) => void;
+  readonly onFailure?: (response: Response) => void;
 }
