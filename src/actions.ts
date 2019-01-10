@@ -28,7 +28,7 @@ export const createRequestAction = <
   request: RequestType,
   success: SuccessType,
   failure: FailureType
-) => <Body>() => {
+) => <Body, Err = any>() => {
   return createAsyncAction<RequestType, SuccessType, FailureType>(
     request,
     success,
@@ -40,7 +40,7 @@ export const createRequestAction = <
         readonly url: URL | string;
         readonly config?: RequestInit;
       };
-      readonly resolvers?: Resolvers;
+      readonly resolvers?: Resolvers<Body, Err>;
     },
     {
       readonly response: Response;
@@ -48,6 +48,7 @@ export const createRequestAction = <
     },
     {
       readonly response: Response;
+      readonly error: Err;
     }
   >();
 };
@@ -64,7 +65,7 @@ const check = (types: string[]) => {
   return types;
 };
 
-interface Resolvers {
-  readonly onSuccess?: (response: Response) => void;
-  readonly onFailure?: (response: Response) => void;
+interface Resolvers<Body, Err> {
+  readonly onSuccess?: (response: Response) => Body;
+  readonly onFailure?: (response: Response) => Err;
 }
