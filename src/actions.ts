@@ -28,7 +28,7 @@ export const createRequestAction = <
   request: RequestType,
   success: SuccessType,
   failure: FailureType
-) => <SuccessResponse, ErrorResponse = any>() => {
+) => <Body>() => {
   return createAsyncAction<RequestType, SuccessType, FailureType>(
     request,
     success,
@@ -44,11 +44,10 @@ export const createRequestAction = <
     },
     {
       readonly response: Response;
-      readonly body: SuccessResponse;
+      readonly body: Body;
     },
     {
       readonly response: Response;
-      readonly error: ErrorResponse;
     }
   >();
 };
