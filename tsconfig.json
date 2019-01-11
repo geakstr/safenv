@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "baseUrl": ".",
     "declarationDir": "./dist",
     "module": "es6",
     "noImplicitAny": true,
     "outDir": "./dist",
     "target": "es5",
+    "moduleResolution": "node",
     "lib": ["es2015", "dom"],
     "jsx": "react",
     "sourceMap": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"]
 }

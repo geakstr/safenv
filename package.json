@@ -19,11 +19,13 @@
     "immer": "^1.10.0",
     "react-redux": "6.0.0",
     "redux": "^4.0.0",
-    "typesafe-actions": "^3.0.0"
+    "typesafe-actions": "^3.0.0",
+    "react": "^16.4.0"
   },
   "devDependencies": {
     "@types/react-redux": "6.0.12",
     "immer": "1.10.0",
+    "react": "^16.4.0",
     "react-redux": "6.0.0",
     "redux": "4.0.1",
     "rollup": "0.68.0",

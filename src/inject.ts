@@ -1,5 +1,4 @@
 import {
-  connect,
   MapDispatchToPropsParam,
   MapStateToPropsParam,
   Options
@@ -11,9 +10,17 @@ import {
   Dispatch,
   Store
 } from "redux";
+import { Provider } from "./provider";
 
-export const createInject = <RootState, Actions, Selectors, Extras>(
-  args: Args<RootState, Actions, Selectors, Extras>
+export const createInject = <
+  Connect extends (...args: any[]) => any,
+  RootState,
+  Actions,
+  Selectors,
+  Extras
+>(
+  connect: Connect,
+  provider: Provider<RootState, Actions, Selectors, Extras>
 ) => <
   StateProps = {},
   DispatchProps extends ActionCreatorsMapObject = {},
@@ -29,12 +36,7 @@ export const createInject = <RootState, Actions, Selectors, Extras>(
     OwnProps
   >
 ) => {
-  const mappers = injector({
-    actions: args.actions,
-    selectors: args.selectors,
-    dispatch: args.store.dispatch,
-    extras: args.extras as Extras
-  });
+  const mappers = injector(provider);
   if (!mappers.mapState && !mappers.mapActions) {
     throw new Error("mapState or mapActions must be provided");
   }
@@ -42,21 +44,17 @@ export const createInject = <RootState, Actions, Selectors, Extras>(
   type ConnectedComponent = React.ComponentType<
     StateProps & DispatchProps & OwnProps
   >;
-
   const mapStateToProps = mappers.mapState ? mappers.mapState : null;
-
   const actionsMapper = mappers.mapActions
     ? mappers.mapActions
     : (dispatch: Dispatch, ownProps: OwnProps): DispatchProps => {
         return {} as DispatchProps;
       };
-
   const mapDispatchToProps: MapDispatchToPropsParam<DispatchProps, OwnProps> =
     actionsMapper instanceof Function
       ? actionsMapper
       : dispatch => bindActionCreators(actionsMapper, dispatch);
-
-  return connect<StateProps, DispatchProps, OwnProps, RootState>(
+  return connect(
     mapStateToProps,
     mapDispatchToProps
   ) as (Component: ConnectedComponent) => WrappedComponent;
@@ -109,5 +107,5 @@ type Injector<
   DispatchProps extends ActionCreatorsMapObject = {},
   OwnProps = {}
 > = (
-  args: InjectedArgs<RootState, Actions, Selectors, Extras>
+  provider: Provider<RootState, Actions, Selectors, Extras>
 ) => ConnectMappers<RootState, StateProps, DispatchProps, OwnProps>;
