@@ -4,7 +4,7 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "@safenv/actions": "0.2.4",
+    "@safenv/actions": "0.2.7",
     "@safenv/di": "0.3.0",
     "@safenv/inject": "0.3.0",
     "@safenv/reducers": "0.2.0",

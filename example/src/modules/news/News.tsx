@@ -1,40 +1,40 @@
-import { InjectedProps } from "@safenv/inject";
 import * as React from "react";
 import { inject } from "~/factory";
 import { NewsItem } from "./NewsItem";
 import { HackerNewsPost } from "./state/types";
 
-const injector = inject(({ actions, selectors }) => ({
+const injector = inject(({ actions, selectors, extras }) => ({
   mapState: state => ({
     loading: selectors("news").getLoading(state),
     error: selectors("news").getError(state),
-    newsIds: selectors("news").getNewsIds(state)
+    newsIds: selectors("news").getNewsIds(state),
+    fetch: extras().fetch
   }),
   mapActions: {
     fetchNews: actions("news").fetchNews.request
   }
 }));
 
-type Props = InjectedProps<typeof injector>;
+type Props = import("@safenv/inject").InjectedProps<typeof injector>;
 
 export const News = injector(
   class NewsComponent extends React.Component<Props> {
     componentDidMount() {
-      const baseUrl = "https://hacker-news.firebaseio.com/v0";
       this.props.fetchNews({
         format: "json",
-        url: `${baseUrl}/topstories.json`,
+        url: "/topstories.json",
         handlers: {
           onSuccess: async response => {
-            const ids: string[] = await response.json();
+            const ids = ((await response.json()) as any) as string[];
             const promises = ids.slice(0, 10).map(id => {
               return new Promise<HackerNewsPost>((resolve, reject) => {
-                fetch(`${baseUrl}/item/${id}.json`)
+                this.props.fetch
+                  .request<HackerNewsPost>(`/item/${id}.json`)
                   .then(response => resolve(response.json()))
                   .catch(reject);
               });
             });
-            return await Promise.all(promises);
+            return Promise.all(promises);
           }
         }
       });

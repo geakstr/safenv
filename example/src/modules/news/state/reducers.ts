@@ -29,6 +29,7 @@ export const reducer = createReducer(
       case getType(actions("news").fetchNews.failure): {
         draft.loading = false;
         const error = action.payload.error;
+        console.log(action);
         const defaultError = "Something went wrong";
         draft.error = typeof error === "string" ? error : defaultError;
         break;
