@@ -1,3 +1,4 @@
+import { TypedResponse } from "@safenv/fetch";
 import { AnyAction, Dispatch, Store } from "redux";
 import * as tsa from "typesafe-actions";
 
@@ -89,8 +90,11 @@ export interface RequestDispatchResult<Body, Err> {
   readonly cancel: () => void;
 }
 
-export const createFetchActionMiddleware = <FetchApi extends typeof fetch>(
-  fetchApi: FetchApi
+export const createFetchActionMiddleware = (
+  fetchApi: (
+    url: string,
+    config?: RequestInit
+  ) => Promise<Response | TypedResponse<any>>
 ) => <RootState>(store: Store<RootState, AnyAction>) => (next: Dispatch) => (
   action: AnyAction
 ): AnyAction | RequestDispatchResult<any, any> => {
@@ -114,11 +118,11 @@ export const createFetchActionMiddleware = <FetchApi extends typeof fetch>(
       if (response.ok) {
         let promise: Promise<any>;
         if (resolvers && resolvers.onSuccess) {
-          promise = Promise.resolve(resolvers.onSuccess(response as Response));
+          promise = Promise.resolve(resolvers.onSuccess(response));
         } else {
-          promise = (response as Response)[format]();
+          promise = response[format]();
         }
-        promise.then(body => {
+        return promise.then(body => {
           if (!cancelled) {
             store.dispatch(action.meta.success({ body, response }, payload));
           }
@@ -128,7 +132,7 @@ export const createFetchActionMiddleware = <FetchApi extends typeof fetch>(
         if (resolvers && resolvers.onFailure) {
           promise = Promise.resolve(resolvers.onFailure(response));
         }
-        promise.then(error => {
+        return promise.then(error => {
           if (!cancelled) {
             store.dispatch(action.meta.failure({ error, response }, payload));
           }
@@ -190,7 +194,9 @@ interface FailurePayload<Err> {
 
 interface Handlers<Body, Err> {
   readonly handlers?: {
-    readonly onSuccess?: (response: Response) => Promise<Body> | Body;
-    readonly onFailure?: (response: Response) => Promise<Err> | Err;
+    readonly onSuccess?: (
+      response: TypedResponse<Body>
+    ) => Promise<Body> | Body;
+    readonly onFailure?: (response: TypedResponse<any>) => Promise<Err> | Err;
   };
 }

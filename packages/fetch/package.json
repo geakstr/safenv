@@ -1,7 +1,7 @@
 {
-  "name": "@safenv/actions",
-  "version": "0.2.7",
-  "description": "redux actions helpers for @safenv tools",
+  "name": "@safenv/fetch",
+  "version": "0.1.1",
+  "description": "better typesafe fetch api with defaults and interceptors",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",
   "repository": {
@@ -14,12 +14,5 @@
   "scripts": {
     "dist": "npm run build && npm publish dist",
     "build": "rm -rf ./dist && mkdir ./dist && cp ./package*.json ./dist && rollup --config"
-  },
-  "peerDependencies": {
-    "redux": "^4.0.0",
-    "typesafe-actions": "^3.0.0"
-  },
-  "dependencies": {
-    "@safenv/fetch": "0.1.1"
   }
 }
