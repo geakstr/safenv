@@ -24,8 +24,8 @@ export const News = injector(
         format: "json",
         url: "/topstories.json",
         handlers: {
-          onSuccess: async response => {
-            const ids = ((await response.json()) as any) as string[];
+          onSuccess: async (response: Response) => {
+            const ids: string[] = await response.json();
             const promises = ids.slice(0, 10).map(id => {
               return new Promise<HackerNewsPost>((resolve, reject) => {
                 this.props.fetch
