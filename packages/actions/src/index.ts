@@ -116,9 +116,9 @@ export const createFetchActionMiddleware = <FetchApi extends typeof fetch>(
       } else {
         promise = response[format]();
       }
-      promise.then((body: any) => {
+      return promise.then((body: any) => {
         if (!cancelled) {
-          store.dispatch(action.meta.success({ body, response }));
+          return store.dispatch(action.meta.success({ body, response }));
         }
       });
     })
@@ -129,9 +129,9 @@ export const createFetchActionMiddleware = <FetchApi extends typeof fetch>(
       } else {
         promise = response.text();
       }
-      promise.then((error: any) => {
+      return promise.then((error: any) => {
         if (!cancelled) {
-          store.dispatch(action.meta.failure({ error, response }));
+          return store.dispatch(action.meta.failure({ error, response }));
         }
       });
     });
