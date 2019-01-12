@@ -1,9 +1,9 @@
 import { ActionType } from "typesafe-actions";
 import * as news from "~/modules/news/state/actions";
 
-export const actions = {
+export const createActions = () => ({
   news
-};
+});
 
-export type Actions = typeof actions;
+export type Actions = ReturnType<typeof createActions>;
 export type RootAction = ActionType<Actions>;

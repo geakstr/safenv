@@ -14,7 +14,7 @@ export const provider = createProvider<
   import("./state/reducers").RootState,
   import("./state/actions").Actions,
   import("./state/selectors").Selectors,
-  undefined
+  import("./state/extras").Extras
 >();
 
 export const inject = createInject(connect, provider);

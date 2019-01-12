@@ -20,6 +20,6 @@
     "react-redux": "^6.0.0"
   },
   "dependencies": {
-    "@safenv/di": "^0.1.0"
+    "@safenv/di": "^0.3.0"
   }
 }

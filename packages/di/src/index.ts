@@ -6,37 +6,28 @@ export const createProvider = <RootState, Actions, Selectors, Extras>() => {
     store() {
       return storage.store;
     },
-    setStore(store) {
-      storage.store = store;
-    },
     actions(key) {
       return storage.actions[key];
-    },
-    addActions(actions) {
-      storage.actions = {
-        ...storage.actions,
-        ...actions
-      };
     },
     selectors(key) {
       return storage.selectors[key];
     },
-    addSelectors(selectors) {
-      storage.selectors = {
-        ...storage.actions,
-        ...selectors
-      };
-    },
     extras() {
       return storage.extras;
     },
-    addExtras(extras) {
-      storage.extras = {
-        ...storage.extras,
-        ...extras
-      };
-    },
-    run(runner) {
+    runWith(
+      {
+        createStore,
+        createActions,
+        createSelectors,
+        createExtras = () => undefined
+      }: ProviderContext<RootState, Actions, Selectors, Extras>,
+      runner
+    ) {
+      storage.actions = createActions();
+      storage.selectors = createSelectors();
+      storage.extras = createExtras();
+      storage.store = createStore();
       return new Promise<void>(() => runner());
     }
   } as Provider<RootState, Actions, Selectors, Extras>;
@@ -44,14 +35,13 @@ export const createProvider = <RootState, Actions, Selectors, Extras>() => {
 
 export interface Provider<RootState, Actions, Selectors, Extras> {
   store(): Store<RootState, AnyAction>;
-  setStore(store: Store<RootState, AnyAction>): void;
   actions<K extends keyof Actions>(key: K): Actions[K];
-  addActions(actions: Actions): void;
   selectors<K extends keyof Selectors>(key: K): Selectors[K];
-  addSelectors(selectors: Selectors): void;
   extras(): Extras;
-  addExtras(extras: Extras): void;
-  run(runner: () => void): Promise<void>;
+  runWith(
+    ctx: ProviderContext<RootState, Actions, Selectors, Extras>,
+    runner: () => void
+  ): Promise<void>;
 }
 
 interface Storage<RootState, Actions, Selectors, Extras> {
@@ -59,4 +49,11 @@ interface Storage<RootState, Actions, Selectors, Extras> {
   actions: Actions;
   selectors: Selectors;
   extras: Extras;
+}
+
+interface ProviderContext<RootState, Actions, Selectors, Extras> {
+  readonly createStore: () => Store<RootState, AnyAction>;
+  readonly createActions: () => Actions;
+  readonly createSelectors: () => Selectors;
+  readonly createExtras?: () => Extras;
 }
