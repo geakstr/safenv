@@ -39,15 +39,21 @@ export const createFetchActionCreator = (
   ) => <Body, Err = any>() => {
     type RequestPayload = FetchRequestConfig & Handlers<Body, Err>;
     const successAction = createStandardAction(success).map(
-      (payload: SuccessPayload<Body>) => ({
+      (payload: SuccessPayload<Body>, requestPayload: RequestPayload) => ({
         payload,
-        meta: ("@@safenv/fetch-action/success" as any) as undefined
+        meta: {
+          marker: "@@safenv/fetch-action/success",
+          request: requestPayload
+        }
       })
     );
     const failureAction = createStandardAction(failure).map(
-      (payload: FailurePayload<Err>) => ({
+      (payload: FailurePayload<Err>, requestPayload: RequestPayload) => ({
         payload,
-        meta: ("@@safenv/fetch-action/failure" as any) as undefined
+        meta: {
+          marker: "@@safenv/fetch-action/failure",
+          request: requestPayload
+        }
       })
     );
     const requestAction = createStandardAction(request).map(
@@ -104,34 +110,42 @@ export const createFetchActionMiddleware = <FetchApi extends typeof fetch>(
   };
   fetchApi(url, config)
     .then(response => {
-      if (!response.ok) {
-        throw response;
-      }
-      return response;
-    })
-    .then(response => {
-      let promise;
-      if (resolvers && resolvers.onSuccess) {
-        promise = resolvers.onSuccess(response);
-      } else {
-        promise = response[format]();
-      }
-      return promise.then((body: any) => {
-        if (!cancelled) {
-          return store.dispatch(action.meta.success({ body, response }));
+      if (cancelled) return;
+      if (response.ok) {
+        let promise: Promise<any>;
+        if (resolvers && resolvers.onSuccess) {
+          promise = Promise.resolve(resolvers.onSuccess(response as Response));
+        } else {
+          promise = (response as Response)[format]();
         }
-      });
-    })
-    .catch(response => {
-      let promise;
-      if (resolvers && resolvers.onFailure) {
-        promise = resolvers.onFailure(response);
+        promise.then(body => {
+          if (!cancelled) {
+            store.dispatch(action.meta.success({ body, response }, payload));
+          }
+        });
       } else {
-        promise = response.text();
+        let promise = Promise.resolve(response.statusText);
+        if (resolvers && resolvers.onFailure) {
+          promise = Promise.resolve(resolvers.onFailure(response));
+        }
+        promise.then(error => {
+          if (!cancelled) {
+            store.dispatch(action.meta.failure({ error, response }, payload));
+          }
+        });
       }
-      return promise.then((error: any) => {
+    })
+    .catch(error => {
+      if (cancelled) return;
+      let errorPromise = Promise.resolve(error);
+      if (!cancelled && resolvers && resolvers.onFailure) {
+        errorPromise = Promise.resolve(resolvers.onFailure(error));
+      }
+      errorPromise.then(error => {
         if (!cancelled) {
-          return store.dispatch(action.meta.failure({ error, response }));
+          store.dispatch(
+            action.meta.failure({ error, response: undefined }, payload)
+          );
         }
       });
     });
@@ -176,7 +190,7 @@ interface FailurePayload<Err> {
 
 interface Handlers<Body, Err> {
   readonly handlers?: {
-    readonly onSuccess?: (response: Response) => Promise<Body>;
-    readonly onFailure?: (response: Response) => Promise<Err>;
+    readonly onSuccess?: (response: Response) => Promise<Body> | Body;
+    readonly onFailure?: (response: Response) => Promise<Err> | Err;
   };
 }
