@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "baseUrl": ".",
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "lib": ["es2015", "dom"],
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  },
+  "include": ["./src/**/*"]
+}

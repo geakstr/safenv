@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
+  "dependencies": {
+    "@safenv/actions": "0.1.2",
+    "@safenv/di": "0.2.0",
+    "@safenv/inject": "0.2.0",
+    "@safenv/reducers": "0.1.1",
+    "re-reselect": "2.3.0",
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
+    "react-redux": "6.0.0",
+    "redux": "4.0.1",
+    "reselect": "4.0.0",
+    "typesafe-actions": "3.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "16.7.18",
+    "@types/react-dom": "16.0.11",
+    "css-loader": "2.1.0",
+    "html-webpack-plugin": "3.2.0",
+    "react-dev-utils": "7.0.1",
+    "style-loader": "0.23.1",
+    "ts-loader": "5.3.3",
+    "tsconfig-paths-webpack-plugin": "3.2.0",
+    "typescript": "3.2.2",
+    "webpack": "4.28.4",
+    "webpack-cli": "3.2.1",
+    "webpack-dev-server": "3.1.14"
+  }
+}
