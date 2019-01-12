@@ -6,7 +6,7 @@
   "dependencies": {
     "@safenv/actions": "0.2.0",
     "@safenv/di": "0.3.0",
-    "@safenv/inject": "0.2.0",
+    "@safenv/inject": "0.3.0",
     "@safenv/reducers": "0.2.0",
     "re-reselect": "2.3.0",
     "react": "16.7.0",

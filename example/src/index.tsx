@@ -7,7 +7,7 @@ import "~/styles.css";
 
 const context = createContext();
 
-provider.runWith(context, async store => {
+provider.runWith(context, async () => {
   const { App } = await import("~/modules/app/App");
   ReactDOM.render(
     <Provider store={provider.store()}>
