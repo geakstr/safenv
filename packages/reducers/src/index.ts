@@ -1,6 +1,6 @@
+import { Provider } from "@safenv/di";
 import produce, { Draft } from "immer";
 import { ActionType, getType as typesafeGetType } from "typesafe-actions";
-import { Provider } from "./provider";
 
 export const createReducerCreator = <RootState, Actions, Selectors, Extras>(
   provider: Provider<RootState, Actions, Selectors, Extras>

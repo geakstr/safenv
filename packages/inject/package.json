@@ -1,0 +1,25 @@
+{
+  "name": "@safenv/inject",
+  "version": "0.2.0",
+  "description": "better react-redux `connect` for @safenv tools",
+  "author": "Dmitry Kharitonov <geakstr@me.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/geakstr/safenv.git"
+  },
+  "main": "index.js",
+  "module": "index.es.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "dist": "npm run build && npm publish dist",
+    "build": "rm -rf ./dist && mkdir ./dist && cp ./package*.json ./dist && rollup --config"
+  },
+  "peerDependencies": {
+    "redux": "^4.0.0",
+    "react-redux": "^6.0.0"
+  },
+  "dependencies": {
+    "@safenv/di": "^0.1.0"
+  }
+}

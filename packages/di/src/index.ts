@@ -35,6 +35,9 @@ export const createProvider = <RootState, Actions, Selectors, Extras>() => {
         ...storage.extras,
         ...extras
       };
+    },
+    run(runner) {
+      return new Promise<void>(() => runner());
     }
   } as Provider<RootState, Actions, Selectors, Extras>;
 };
@@ -48,6 +51,7 @@ export interface Provider<RootState, Actions, Selectors, Extras> {
   addSelectors(selectors: Selectors): void;
   extras(): Extras;
   addExtras(extras: Extras): void;
+  run(runner: () => void): Promise<void>;
 }
 
 interface Storage<RootState, Actions, Selectors, Extras> {

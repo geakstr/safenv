@@ -45,7 +45,7 @@ export const createFetchActionCreator = (
       })
     );
     const failureAction = createStandardAction(failure).map(
-      (payload: FailurePayload<Body>) => ({
+      (payload: FailurePayload<Err>) => ({
         payload,
         meta: ("@@safenv/fetch-action/failure" as any) as undefined
       })

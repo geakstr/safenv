@@ -1,3 +1,4 @@
+import { Provider } from "@safenv/di";
 import {
   MapDispatchToPropsParam,
   MapStateToPropsParam,
@@ -10,7 +11,6 @@ import {
   Dispatch,
   Store
 } from "redux";
-import { Provider } from "./provider";
 
 export const createInject = <
   Connect extends (...args: any[]) => any,
@@ -36,7 +36,11 @@ export const createInject = <
     OwnProps
   >
 ) => {
-  const mappers = injector(provider);
+  const mappers = injector({
+    actions: provider.actions,
+    selectors: provider.selectors,
+    extras: provider.extras
+  });
   if (!mappers.mapState && !mappers.mapActions) {
     throw new Error("mapState or mapActions must be provided");
   }
@@ -54,11 +58,22 @@ export const createInject = <
     actionsMapper instanceof Function
       ? actionsMapper
       : dispatch => bindActionCreators(actionsMapper, dispatch);
+  if (mappers.options) {
+    return connect(
+      mapStateToProps,
+      mapDispatchToProps,
+      mappers.options
+    ) as (Component: ConnectedComponent) => WrappedComponent;
+  }
   return connect(
     mapStateToProps,
     mapDispatchToProps
   ) as (Component: ConnectedComponent) => WrappedComponent;
 };
+
+export type InjectedProps<
+  T extends ReturnType<ReturnType<typeof createInject>>
+> = ReactComponentProps<FirstArgument<T>>;
 
 interface Args<RootState, Actions, Selectors, Extras> {
   readonly store: Store<RootState, AnyAction>;
@@ -107,5 +122,15 @@ type Injector<
   DispatchProps extends ActionCreatorsMapObject = {},
   OwnProps = {}
 > = (
-  provider: Provider<RootState, Actions, Selectors, Extras>
+  args: {
+    actions<K extends keyof Actions>(key: K): Actions[K];
+    selectors<K extends keyof Selectors>(key: K): Selectors[K];
+    extras: () => Extras;
+  }
 ) => ConnectMappers<RootState, StateProps, DispatchProps, OwnProps>;
+
+type FirstArgument<T> = T extends (arg1: infer U, ...args: any[]) => any
+  ? U
+  : any;
+
+type ReactComponentProps<T> = T extends React.ComponentType<infer X> ? X : null;
