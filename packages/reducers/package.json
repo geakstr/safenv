@@ -1,6 +1,6 @@
 {
   "name": "@safenv/reducers",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "redux reducers helpers for @safenv tools",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",

@@ -21,5 +21,5 @@ module.exports = {
     minify({ comments: false, sourceMap: true }),
     sourceMaps()
   ],
-  external: ["typesafe-actions", "react-redux", "redux", "immer"]
+  external: ["react-redux", "redux", "@safenv/di"]
 };
