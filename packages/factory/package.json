@@ -21,17 +21,17 @@
     "build": "rm -rf ./lib && mkdir ./lib && rollup --config"
   },
   "peerDependencies": {
-    "@safenv/actions": "^0.3.2",
-    "@safenv/di": "^0.3.2",
-    "@safenv/fetch": "^0.2.0",
-    "@safenv/inject": "^0.3.2",
-    "@safenv/reducers": "^0.2.2"
-  },
-  "devDependencies": {
-    "@safenv/actions": "^1.2.0",
+    "@safenv/actions": "^1.0.0",
     "@safenv/di": "^1.0.0",
     "@safenv/fetch": "^1.0.0",
     "@safenv/inject": "^1.0.0",
-    "@safenv/reducers": "^1.2.1"
+    "@safenv/reducers": "^1.0.0"
+  },
+  "devDependencies": {
+    "@safenv/actions": "^1.0.0",
+    "@safenv/di": "^1.0.0",
+    "@safenv/fetch": "^1.0.0",
+    "@safenv/inject": "^1.0.0",
+    "@safenv/reducers": "^1.0.0"
   }
 }
