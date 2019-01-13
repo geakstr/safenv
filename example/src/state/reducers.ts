@@ -3,7 +3,7 @@ import * as news from "~/modules/news/state/reducers";
 
 export const createRootReducer = () => {
   return combineReducers({
-    news: news.reducer()
+    news: news.reducer
   });
 };
 

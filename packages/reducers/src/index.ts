@@ -7,7 +7,7 @@ export const createReducerCreator = <RootState, Actions, Selectors, Extras>(
 ) => <State>(
   reducerCreator: ReducerCreator<State, Actions>,
   initialState?: State
-) => () => {
+) => {
   const reducer = reducerCreator({
     actions: provider.actions,
     getType: typesafeGetType
