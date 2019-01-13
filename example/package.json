@@ -4,12 +4,12 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "@safenv/actions": "^0.6.0",
-    "@safenv/di": "^0.6.0",
-    "@safenv/factory": "^0.6.0",
-    "@safenv/fetch": "^0.6.0",
-    "@safenv/inject": "^0.6.0",
-    "@safenv/reducers": "^0.6.0",
+    "@safenv/actions": "^1.0.0",
+    "@safenv/di": "^1.0.0",
+    "@safenv/factory": "^1.0.0",
+    "@safenv/fetch": "^1.0.0",
+    "@safenv/inject": "^1.0.0",
+    "@safenv/reducers": "^1.0.0",
     "immer": "1.10.4",
     "re-reselect": "2.3.0",
     "react": "16.7.0",
@@ -33,5 +33,5 @@
     "webpack-cli": "3.2.1",
     "webpack-dev-server": "3.1.14"
   },
-  "version": "0.6.0"
+  "version": "1.0.0"
 }
