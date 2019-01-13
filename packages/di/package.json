@@ -1,6 +1,6 @@
 {
   "name": "@safenv/di",
-  "version": "0.3.2",
+  "version": "0.6.0",
   "description": "dependency injector for @safenv tools",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",

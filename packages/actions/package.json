@@ -1,6 +1,6 @@
 {
   "name": "@safenv/actions",
-  "version": "0.3.2",
+  "version": "0.6.0",
   "description": "redux actions helpers for @safenv tools",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",
@@ -25,6 +25,6 @@
     "typesafe-actions": "^3.0.0"
   },
   "dependencies": {
-    "@safenv/fetch": "^0.2.0"
+    "@safenv/fetch": "^0.6.0"
   }
 }

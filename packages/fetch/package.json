@@ -1,6 +1,6 @@
 {
   "name": "@safenv/fetch",
-  "version": "0.2.1",
+  "version": "0.6.0",
   "description": "better typesafe fetch api with defaults and interceptors",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",
