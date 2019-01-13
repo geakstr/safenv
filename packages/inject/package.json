@@ -8,12 +8,17 @@
     "type": "git",
     "url": "git://github.com/geakstr/safenv.git"
   },
-  "main": "index.js",
-  "module": "index.es.js",
-  "types": "index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "dist": "npm run build && npm publish dist",
-    "build": "rm -rf ./dist && mkdir ./dist && cp ./package*.json ./dist && rollup --config"
+    "build": "rm -rf ./lib && mkdir ./lib && rollup --config"
   },
   "peerDependencies": {
     "redux": "^4.0.0",

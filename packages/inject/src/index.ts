@@ -6,14 +6,8 @@ import {
 } from "react-redux";
 import { ActionCreatorsMapObject, bindActionCreators, Dispatch } from "redux";
 
-export const createInject = <
-  Connect extends (...args: any[]) => any,
-  RootState,
-  Actions,
-  Selectors,
-  Extras
->(
-  connect: Connect,
+export const createInject = <RootState, Actions, Selectors, Extras>(
+  connect: (...args: any[]) => any,
   provider: Provider<RootState, Actions, Selectors, Extras>
 ) => <
   StateProps = {},

@@ -1,6 +1,6 @@
 {
   "name": "@safenv/actions",
-  "version": "0.2.8",
+  "version": "0.3.2",
   "description": "redux actions helpers for @safenv tools",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",
@@ -8,18 +8,23 @@
     "type": "git",
     "url": "git://github.com/geakstr/safenv.git"
   },
-  "main": "index.js",
-  "module": "index.es.js",
-  "types": "index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "dist": "npm run build && npm publish dist",
-    "build": "rm -rf ./dist && mkdir ./dist && cp ./package*.json ./dist && rollup --config"
+    "build": "rm -rf ./lib && mkdir ./lib && rollup --config"
   },
   "peerDependencies": {
     "redux": "^4.0.0",
     "typesafe-actions": "^3.0.0"
   },
   "dependencies": {
-    "@safenv/fetch": "0.1.1"
+    "@safenv/fetch": "^0.2.0"
   }
 }

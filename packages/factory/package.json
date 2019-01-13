@@ -1,6 +1,6 @@
 {
   "name": "@safenv/factory",
-  "version": "0.1.0",
+  "version": "0.2.3",
   "description": "helper to setup @safenv utils",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",
@@ -8,19 +8,30 @@
     "type": "git",
     "url": "git://github.com/geakstr/safenv.git"
   },
-  "main": "index.js",
-  "module": "index.es.js",
-  "types": "index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rm -rf ./lib && mkdir ./lib && rollup --config"
+  },
   "peerDependencies": {
-    "@safenv/actions": "0.2.8",
-    "@safenv/di": "0.3.2",
-    "@safenv/inject": "0.3.2",
-    "@safenv/reducers": "0.2.2"
+    "@safenv/actions": "^0.3.2",
+    "@safenv/di": "^0.3.2",
+    "@safenv/inject": "^0.3.2",
+    "@safenv/reducers": "^0.2.2",
+    "@safenv/fetch": "^0.2.0"
   },
   "devDependencies": {
-    "@safenv/actions": "0.2.8",
-    "@safenv/di": "0.3.2",
-    "@safenv/inject": "0.3.2",
-    "@safenv/reducers": "0.2.2"
+    "@safenv/actions": "^0.3.2",
+    "@safenv/di": "^0.3.2",
+    "@safenv/inject": "^0.3.2",
+    "@safenv/reducers": "^0.2.2",
+    "@safenv/fetch": "^0.2.0"
   }
 }

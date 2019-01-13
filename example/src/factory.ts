@@ -15,7 +15,7 @@ export const {
   import("./state/actions").Actions,
   import("./state/selectors").Selectors,
   import("./state/extras").Extras
->(connect);
+>({ connect });
 
 export { createSelector } from "reselect";
 export { createCachedSelector };

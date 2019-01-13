@@ -27,7 +27,8 @@ export const createAsyncActionCreator = () => {
 };
 
 export const createFetchActionCreator = (
-  createStandardAction: CreateStandardAction
+  createStandardAction: CreateStandardAction,
+  argSkipMiddleware: boolean = false
 ) => {
   return <
     RequestType extends string,
@@ -58,14 +59,18 @@ export const createFetchActionCreator = (
       })
     );
     const requestAction = createStandardAction(request).map(
-      (payload: RequestPayload) => ({
-        payload,
-        meta: ({
-          marker: "@@safenv/fetch-action/request",
-          success: successAction,
-          failure: failureAction
-        } as any) as undefined
-      })
+      (payload: RequestPayload) => {
+        const { skipMiddleware = argSkipMiddleware, ...restPayload } = payload;
+        return {
+          payload: restPayload,
+          meta: {
+            skipMiddleware,
+            marker: "@@safenv/fetch-action/request",
+            success: successAction,
+            failure: failureAction
+          }
+        };
+      }
     );
     return {
       request: requestAction,
@@ -102,6 +107,9 @@ export const createFetchActionMiddleware = (
     typeof action.meta !== "object" ||
     action.meta.marker !== "@@safenv/fetch-action/request"
   ) {
+    return next(action);
+  }
+  if (action.meta.skipMiddleware) {
     return next(action);
   }
   let cancelled = false;
@@ -166,6 +174,7 @@ export interface FetchRequestConfig {
   readonly format: "json" | "blob" | "text";
   readonly url: string;
   readonly config?: RequestInit;
+  readonly skipMiddleware?: boolean;
 }
 
 export interface Handlers<Body, Err> {
@@ -185,6 +194,10 @@ export interface SuccessPayload<Body> {
 export interface FailurePayload<Err> {
   readonly response: Response;
   readonly error: Err;
+}
+
+export interface CreateFetchActionCreatorOptions {
+  readonly skipMiddleware?: boolean;
 }
 
 const cache: { [key: string]: boolean } = {};

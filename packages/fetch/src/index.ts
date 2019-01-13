@@ -1,3 +1,6 @@
+import * as deepmerge from "deepmerge";
+import * as isPlainObject from "is-plain-object";
+
 export const createFetch = (envFetch: FetchApi, defaults: Defaults = {}) => {
   const interceptors: Interceptor[] = [];
 
@@ -48,13 +51,16 @@ export const createFetch = (envFetch: FetchApi, defaults: Defaults = {}) => {
   }
 
   return {
-    request: <T>(url: string, config?: RequestInit) => {
-      const { baseUrl, config: defaultConfig } = defaults;
-      const finalUrl = baseUrl
+    request: <T>(url: string, config: RequestInit = {}) => {
+      const { baseUrl, config: defaultConfig = {} } = defaults;
+      const mergedUrl = baseUrl
         ? `${cleanUrl(baseUrl, "suffix")}/${cleanUrl(url, "prefix")}`
         : url;
-      const finalConfig = { ...defaultConfig, ...config };
-      return intercept<T>(finalUrl, finalConfig);
+      const mergedConfig = deepmerge.all([defaultConfig, config], {
+        isMergeableObject: isPlainObject,
+        arrayMerge: (destinationArray, sourceArray, options) => sourceArray
+      });
+      return intercept<T>(mergedUrl, mergedConfig);
     },
     addInterceptor: (interceptor: Interceptor) => {
       interceptors.push(interceptor);

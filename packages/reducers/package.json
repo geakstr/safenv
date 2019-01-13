@@ -8,9 +8,18 @@
     "type": "git",
     "url": "git://github.com/geakstr/safenv.git"
   },
-  "main": "index.js",
-  "module": "index.es.js",
-  "types": "index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rm -rf ./lib && mkdir ./lib && rollup --config"
+  },
   "peerDependencies": {
     "immer": "^1.10.0",
     "typesafe-actions": "^3.0.0"

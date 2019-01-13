@@ -6,12 +6,12 @@ module.exports = {
   input: "./src/index.ts",
   output: [
     {
-      file: "dist/index.js",
+      file: "lib/index.js",
       format: "cjs",
       sourcemap: true
     },
     {
-      file: "dist/index.es.js",
+      file: "lib/index.es.js",
       format: "es",
       sourcemap: true
     }
@@ -20,5 +20,6 @@ module.exports = {
     typescript({ clean: true }),
     minify({ comments: false, sourceMap: true }),
     sourceMaps()
-  ]
+  ],
+  external: ["deepmerge"]
 };
