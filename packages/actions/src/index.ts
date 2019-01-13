@@ -114,7 +114,7 @@ export const createFetchActionMiddleware = (
   }
   let cancelled = false;
   const payload: FetchRequestConfig & Handlers<any, any> = action.payload;
-  const { format, url, handlers: resolvers } = payload;
+  const { format = "json", url, handlers: resolvers } = payload;
   const controller = new AbortController();
   const config = {
     ...payload.config,
@@ -171,7 +171,7 @@ export const createFetchActionMiddleware = (
 };
 
 export interface FetchRequestConfig {
-  readonly format: "json" | "blob" | "text";
+  readonly format?: "json" | "blob" | "text";
   readonly url: string;
   readonly config?: RequestInit;
   readonly skipMiddleware?: boolean;
