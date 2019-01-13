@@ -4,9 +4,9 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "@safenv/actions": "^1.1.0",
+    "@safenv/actions": "^1.2.0",
     "@safenv/di": "^1.0.0",
-    "@safenv/factory": "^1.1.0",
+    "@safenv/factory": "^1.2.0",
     "@safenv/fetch": "^1.0.0",
     "@safenv/inject": "^1.0.0",
     "@safenv/reducers": "^1.0.0",
@@ -33,5 +33,5 @@
     "webpack-cli": "3.2.1",
     "webpack-dev-server": "3.1.14"
   },
-  "version": "1.1.0"
+  "version": "1.2.0"
 }
