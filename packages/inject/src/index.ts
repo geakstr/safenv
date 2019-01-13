@@ -4,13 +4,7 @@ import {
   MapStateToPropsParam,
   Options
 } from "react-redux";
-import {
-  ActionCreatorsMapObject,
-  AnyAction,
-  bindActionCreators,
-  Dispatch,
-  Store
-} from "redux";
+import { ActionCreatorsMapObject, bindActionCreators, Dispatch } from "redux";
 
 export const createInject = <
   Connect extends (...args: any[]) => any,
@@ -75,37 +69,12 @@ export type InjectedProps<
   T extends ReturnType<ReturnType<typeof createInject>>
 > = ReactComponentProps<FirstArgument<T>>;
 
-interface Args<RootState, Actions, Selectors, Extras> {
-  readonly store: Store<RootState, AnyAction>;
-  readonly actions: Actions;
-  readonly selectors: Selectors;
-  readonly extras?: Extras;
-}
-
-type ArgsWithoutStore<RootState, Actions, Selectors, Extras> = Pick<
-  Args<RootState, Actions, Selectors, Extras>,
-  Exclude<keyof Args<RootState, Actions, Selectors, Extras>, "store">
->;
-
-type ArgsWithAllRequired<RootState, Actions, Selectors, Extras> = {
-  [P in keyof ArgsWithoutStore<
-    RootState,
-    Actions,
-    Selectors,
-    Extras
-  >]-?: ArgsWithoutStore<RootState, Actions, Selectors, Extras>[P]
-};
-
-type InjectedArgs<RootState, Actions, Selectors, Extras> = ArgsWithAllRequired<
+export interface ConnectMappers<
   RootState,
-  Actions,
-  Selectors,
-  Extras
-> & {
-  readonly dispatch: Dispatch;
-};
-
-interface ConnectMappers<RootState, StateProps, DispatchProps, OwnProps> {
+  StateProps,
+  DispatchProps,
+  OwnProps
+> {
   readonly mapState?: MapStateToPropsParam<StateProps, OwnProps, RootState>;
   readonly mapActions?:
     | DispatchProps
@@ -113,7 +82,7 @@ interface ConnectMappers<RootState, StateProps, DispatchProps, OwnProps> {
   readonly options?: Options<RootState, StateProps, OwnProps, {}>;
 }
 
-type Injector<
+export type Injector<
   RootState,
   Actions,
   Selectors,

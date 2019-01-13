@@ -168,6 +168,25 @@ export interface FetchRequestConfig {
   readonly config?: RequestInit;
 }
 
+export interface Handlers<Body, Err> {
+  readonly handlers?: {
+    readonly onSuccess?: (
+      response: TypedResponse<Body>
+    ) => Promise<Body> | Body;
+    readonly onFailure?: (response: TypedResponse<any>) => Promise<Err> | Err;
+  };
+}
+
+export interface SuccessPayload<Body> {
+  readonly response: TypedResponse<Body>;
+  readonly body: Body;
+}
+
+export interface FailurePayload<Err> {
+  readonly response: Response;
+  readonly error: Err;
+}
+
 const cache: { [key: string]: boolean } = {};
 
 const check = (types: string[]) => {
@@ -181,22 +200,3 @@ const check = (types: string[]) => {
 };
 
 type CreateStandardAction = ReturnType<typeof createStandardActionCreator>;
-
-interface SuccessPayload<Body> {
-  readonly response: Response;
-  readonly body: Body;
-}
-
-interface FailurePayload<Err> {
-  readonly response: Response;
-  readonly error: Err;
-}
-
-interface Handlers<Body, Err> {
-  readonly handlers?: {
-    readonly onSuccess?: (
-      response: TypedResponse<Body>
-    ) => Promise<Body> | Body;
-    readonly onFailure?: (response: TypedResponse<any>) => Promise<Err> | Err;
-  };
-}

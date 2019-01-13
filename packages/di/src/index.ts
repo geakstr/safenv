@@ -44,14 +44,14 @@ export interface Provider<RootState, Actions, Selectors, Extras> {
   ): Promise<void>;
 }
 
-interface Storage<RootState, Actions, Selectors, Extras> {
+export interface Storage<RootState, Actions, Selectors, Extras> {
   store: Store<RootState, AnyAction>;
   actions: Actions;
   selectors: Selectors;
   extras: Extras;
 }
 
-interface ProviderContext<RootState, Actions, Selectors, Extras> {
+export interface ProviderContext<RootState, Actions, Selectors, Extras> {
   readonly createStore: () => Store<RootState, AnyAction>;
   readonly createActions: () => Actions;
   readonly createSelectors: () => Selectors;

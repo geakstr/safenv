@@ -15,7 +15,7 @@ export const createReducerCreator = <RootState, Actions, Selectors, Extras>(
   return initialState ? produce(reducer, initialState) : produce(reducer);
 };
 
-type ReducerCreator<State, Actions> = (
+export type ReducerCreator<State, Actions> = (
   args: {
     readonly actions: <K extends keyof Actions>(key: K) => Actions[K];
     readonly getType: typeof typesafeGetType;

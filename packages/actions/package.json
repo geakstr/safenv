@@ -1,6 +1,6 @@
 {
   "name": "@safenv/actions",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "redux actions helpers for @safenv tools",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",

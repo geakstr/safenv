@@ -1,0 +1,26 @@
+{
+  "name": "@safenv/factory",
+  "version": "0.1.0",
+  "description": "helper to setup @safenv utils",
+  "author": "Dmitry Kharitonov <geakstr@me.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/geakstr/safenv.git"
+  },
+  "main": "index.js",
+  "module": "index.es.js",
+  "types": "index.d.ts",
+  "peerDependencies": {
+    "@safenv/actions": "0.2.8",
+    "@safenv/di": "0.3.2",
+    "@safenv/inject": "0.3.2",
+    "@safenv/reducers": "0.2.2"
+  },
+  "devDependencies": {
+    "@safenv/actions": "0.2.8",
+    "@safenv/di": "0.3.2",
+    "@safenv/inject": "0.3.2",
+    "@safenv/reducers": "0.2.2"
+  }
+}

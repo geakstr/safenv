@@ -4,10 +4,11 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "@safenv/actions": "0.2.7",
-    "@safenv/di": "0.3.0",
-    "@safenv/inject": "0.3.0",
-    "@safenv/reducers": "0.2.0",
+    "@safenv/actions": "0.2.8",
+    "@safenv/di": "0.3.2",
+    "@safenv/factory": "0.1.0",
+    "@safenv/inject": "0.3.2",
+    "@safenv/reducers": "0.2.2",
     "re-reselect": "2.3.0",
     "react": "16.7.0",
     "react-dom": "16.7.0",
