@@ -11,6 +11,7 @@ export const {
   createAsyncAction,
   createFetchAction,
   createSelector,
+  createSelectorWithArgs,
   createMemoSelector,
   createMemoSelectorWithArgs
 } = createFactory<

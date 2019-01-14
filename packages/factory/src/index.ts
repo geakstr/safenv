@@ -13,7 +13,9 @@ import {
   createMemoSelectorCreator,
   createMemoSelectorWithArgsCreator,
   createSelectorCreator,
-  RootSelector
+  createSelectorWithArgsCreator,
+  RootSelector,
+  RootSelectorWithArgs
 } from "@safenv/selectors";
 import { Draft, Immutable } from "immer";
 import createMemoSelectorWithArgs from "re-reselect";
@@ -44,6 +46,7 @@ export const createFactory = <RootState, Actions, Selectors, Extras>(
   );
 
   const createSelector = createSelectorCreator<RootState>();
+  const createSelectorWithArgs = createSelectorWithArgsCreator<RootState>();
   const createMemoSelector = createMemoSelectorCreator();
   const createMemoSelectorWithArgs = createMemoSelectorWithArgsCreator();
 
@@ -57,6 +60,7 @@ export const createFactory = <RootState, Actions, Selectors, Extras>(
     createAsyncAction,
     createFetchAction,
     createSelector,
+    createSelectorWithArgs,
     createMemoSelector,
     createMemoSelectorWithArgs
   };
@@ -77,6 +81,7 @@ type StoreRequire = Store;
 type ActionCreatorsMapObjectRequire = ActionCreatorsMapObject;
 type ImmutableRequire = Immutable<any>;
 type RootSelectorRequire = RootSelector<any, any>;
+type RootSelectorWithArgsRequire = RootSelectorWithArgs<any, any, any>;
 const tsaRequire = tsa;
 const createMemoSelectorWithArgsRequire = createMemoSelectorWithArgs;
 const createMemoSelectorRequire = createMemoSelector;

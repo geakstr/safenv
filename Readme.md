@@ -126,6 +126,7 @@ export const {
   createAsyncAction,
   createFetchAction,
   createSelector,
+  createSelectorWithArgs,
   createMemoSelector,
   createMemoSelectorWithArgs
 } = createFactory<
@@ -302,7 +303,8 @@ Next the most interested part of reducers: with `getType` in `switch/case` `acti
 import {
   createMemoSelector,
   createMemoSelectorWithArgs,
-  createSelector
+  createSelector,
+  createSelectorWithArgs
 } from "~/factory";
 
 export const getLoading = createSelector(state => {
@@ -323,7 +325,7 @@ export const getNewsIds = createMemoSelector(getNews, news =>
 
 export const getNewsItemById = createMemoSelectorWithArgs(
   getNews,
-  createSelector((state, id: string) => id),
+  createSelectorWithArgs((state, id: string) => id),
   (news, id) => news.find(item => item.id === id)
 )((state, id) => id);
 ```
