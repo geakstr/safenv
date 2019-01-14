@@ -12,10 +12,13 @@ npm install --save \
   @safenv/reducers \
   @safenv/inject \
   @safenv/fetch \
+  @safenv/selectors \
   typesafe-actions \
   react-redux \
   redux \
-  immer
+  immer \
+  reselect \
+  re-reselect
 ```
 
 ### Getting Started

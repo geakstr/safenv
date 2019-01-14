@@ -1,3 +1,3 @@
 ```
-npm install @safenv/reducers @safenv/di immer typesafe-actions --save
+npm install @safenv/selectors reselect re-reselect --save
 ```
