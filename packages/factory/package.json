@@ -1,6 +1,6 @@
 {
   "name": "@safenv/factory",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "helper to setup @safenv utils",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",
@@ -35,12 +35,12 @@
     "typesafe-actions": "^3.0.0"
   },
   "devDependencies": {
-    "@safenv/actions": "^1.3.0",
-    "@safenv/di": "^1.3.0",
-    "@safenv/fetch": "^1.3.0",
-    "@safenv/inject": "^1.3.0",
-    "@safenv/reducers": "^1.3.0",
-    "@safenv/selectors": "^1.3.0",
+    "@safenv/actions": "^1.3.1",
+    "@safenv/di": "^1.3.1",
+    "@safenv/fetch": "^1.3.1",
+    "@safenv/inject": "^1.3.1",
+    "@safenv/reducers": "^1.3.1",
+    "@safenv/selectors": "^1.3.1",
     "@types/react": "^16.7.18",
     "immer": "^1.10.0",
     "re-reselect": "^2.3.0",
