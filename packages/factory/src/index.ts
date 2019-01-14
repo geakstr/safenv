@@ -18,10 +18,7 @@ import {
 import { Draft, Immutable } from "immer";
 import createMemoSelectorWithArgs from "re-reselect";
 import { ActionCreatorsMapObject, AnyAction, Dispatch, Store } from "redux";
-import {
-  createSelector as createMemoSelector,
-  ParametricSelector
-} from "reselect";
+import { createSelector as createMemoSelector } from "reselect";
 import * as tsa from "typesafe-actions";
 
 export const createFactory = <RootState, Actions, Selectors, Extras>(
@@ -80,7 +77,6 @@ type StoreRequire = Store;
 type ActionCreatorsMapObjectRequire = ActionCreatorsMapObject;
 type ImmutableRequire = Immutable<any>;
 type RootSelectorRequire = RootSelector<any, any>;
-type ParametricSelectorRequire = ParametricSelector<any, any, any>;
 const tsaRequire = tsa;
 const createMemoSelectorWithArgsRequire = createMemoSelectorWithArgs;
 const createMemoSelectorRequire = createMemoSelector;

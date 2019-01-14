@@ -1,12 +1,8 @@
 import createMemoSelectorWithArgs from "re-reselect";
-import {
-  createSelector as createMemoSelector,
-  ParametricSelector
-} from "reselect";
+import { createSelector as createMemoSelector } from "reselect";
 
 export const createSelectorCreator = <RootState>() => {
-  return <S extends ParametricSelector<RootState, P, R>, P, R>(selector: S) =>
-    selector;
+  return <R>(selector: RootSelector<RootState, R>) => selector;
 };
 
 export const createMemoSelectorCreator = () => {
