@@ -30,5 +30,6 @@
     "immer": "^1.10.0",
     "redux": "^4.0.1",
     "typesafe-actions": "^3.0.0"
-  }
+  },
+  "gitHead": "f48836f82adb12bcde7394681b61284dcf867d93"
 }

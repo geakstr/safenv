@@ -23,5 +23,6 @@
   "dependencies": {
     "deepmerge": "^3.0.0",
     "is-plain-object": "^2.0.4"
-  }
+  },
+  "gitHead": "f48836f82adb12bcde7394681b61284dcf867d93"
 }

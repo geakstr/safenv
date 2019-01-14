@@ -31,5 +31,6 @@
     "react": "^16.7.0",
     "react-redux": "^6.0.0",
     "redux": "^4.0.0"
-  }
+  },
+  "gitHead": "f48836f82adb12bcde7394681b61284dcf867d93"
 }
