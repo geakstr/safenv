@@ -20,7 +20,7 @@ npm install --save \
 
 ### Getting Started
 
-There are two parts in this manual: Preparation and Usage step. If you want to see these tools in action follow to Usage step.
+There are two parts in this manual: Preparation and Usage step.
 
 #### Preparation Step
 
@@ -327,6 +327,55 @@ export const getNewsItemById = createMemoSelectorWithArgs(
 
 Note all the `state` args are properly typed with `RootState` type.
 
+##### Attatch to root state
+
+Now we should add new actions, reducer and selectors to the root of state.
+
+Inside `state/actions.ts` add `news` actions:
+
+```ts
+import { ActionType } from "typesafe-actions";
+import * as news from "~/modules/news/state/actions";
+
+export const createActions = () => ({
+  news
+});
+
+export type Actions = ReturnType<typeof createActions>;
+export type RootAction = ActionType<Actions>;
+```
+
+Inside `state/reducers.ts` add `news` reducer and `State` type:
+
+```ts
+import { combineReducers } from "redux";
+import * as news from "~/modules/news/state/reducers";
+
+export const createRootReducer = () => {
+  return combineReducers({
+    news: news.reducer
+  });
+};
+
+export interface RootState {
+  readonly news: import("../modules/news/state/reducers").State;
+}
+```
+
+Inside `state/selectors.ts` add `news` selectors:
+
+```ts
+import * as news from "~/modules/news/state/selectors";
+
+export const createSelectors = () => ({
+  news
+});
+
+export type Selectors = ReturnType<typeof createSelectors>;
+```
+
+I'm thinking about how to improve attaching experience. One thought about it - these files can be auto generated in compilation time.
+
 ##### Components
 
 Now it's time to connect react component with redux state. `modules/news/News.tsx` component with comments:
@@ -448,3 +497,5 @@ export const NewsItem = inject(({ selectors }) => ({
   );
 });
 ```
+
+And that's it. It covers all main features of safenv.
