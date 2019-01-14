@@ -8,10 +8,10 @@ import "~/styles.css";
 const context = createContext();
 
 provider.runWith(context, async () => {
-  const { App } = await import("~/modules/app/App");
+  const { News } = await import("~/modules/news/News");
   ReactDOM.render(
     <Provider store={provider.store()}>
-      <App />
+      <News />
     </Provider>,
     document.getElementById("app")
   );

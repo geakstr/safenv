@@ -10,6 +10,7 @@
     "@safenv/fetch": "^1.2.2",
     "@safenv/inject": "^1.0.0",
     "@safenv/reducers": "^1.2.1",
+    "@safenv/selectors": "^1.0.0",
     "immer": "1.10.4",
     "re-reselect": "2.3.0",
     "react": "16.7.0",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@types/react": "16.7.18",
     "@types/react-dom": "16.0.11",
+    "@types/react-redux": "6.0.12",
     "css-loader": "2.1.0",
     "html-webpack-plugin": "3.2.0",
     "react-dev-utils": "7.0.1",

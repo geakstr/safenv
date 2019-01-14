@@ -8,6 +8,18 @@ import { createProvider, Provider } from "@safenv/di";
 import { TypedResponse } from "@safenv/fetch";
 import { createInject } from "@safenv/inject";
 import { createReducerCreator } from "@safenv/reducers";
+import { createBasicReducerCreator } from "@safenv/reducers/lib/basic";
+import {
+  createMemoSelectorCreator,
+  createMemoSelectorWithArgsCreator,
+  createSelectorCreator,
+  RootSelector
+} from "@safenv/selectors";
+import { Draft, Immutable } from "immer";
+import createMemoSelectorWithArgs from "re-reselect";
+import { ActionCreatorsMapObject, AnyAction, Dispatch, Store } from "redux";
+import { createSelector as createMemoSelector } from "reselect";
+import * as tsa from "typesafe-actions";
 
 export const createFactory = <RootState, Actions, Selectors, Extras>(
   options: CreateFactoryOptions
@@ -20,6 +32,7 @@ export const createFactory = <RootState, Actions, Selectors, Extras>(
   );
 
   const createReducer = createReducerCreator(provider);
+  const createBasicReducer = createBasicReducerCreator(provider);
 
   const createAction = createActionCreator();
   const createStandardAction = createStandardActionCreator();
@@ -30,14 +43,22 @@ export const createFactory = <RootState, Actions, Selectors, Extras>(
     skipFetchActionMiddleware
   );
 
+  const createSelector = createSelectorCreator<RootState>();
+  const createMemoSelector = createMemoSelectorCreator();
+  const createMemoSelectorWithArgs = createMemoSelectorWithArgsCreator();
+
   return {
     provider,
     inject,
     createReducer,
+    createBasicReducer,
     createAction,
     createStandardAction,
     createAsyncAction,
-    createFetchAction
+    createFetchAction,
+    createSelector,
+    createMemoSelector,
+    createMemoSelectorWithArgs
   };
 };
 
@@ -46,5 +67,16 @@ export interface CreateFactoryOptions {
   readonly skipFetchActionMiddleware?: boolean;
 }
 
+// hacks to fix https://github.com/Microsoft/TypeScript/issues/26985
 type TypedResponseTypeRequire = TypedResponse<any>;
 type ProviderTypeRequire = Provider<any, any, any, any>;
+type DraftRequire = Draft<any>;
+type DispatchRequire = Dispatch;
+type AnyActionRequire = AnyAction;
+type StoreRequire = Store;
+type ActionCreatorsMapObjectRequire = ActionCreatorsMapObject;
+type ImmutableRequire = Immutable<any>;
+type RootSelectorRequire = RootSelector<any, any>;
+const tsaRequire = tsa;
+const createMemoSelectorWithArgsRequire = createMemoSelectorWithArgs;
+const createMemoSelectorRequire = createMemoSelector;

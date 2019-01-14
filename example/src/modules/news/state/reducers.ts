@@ -2,9 +2,9 @@ import { createReducer } from "~/factory";
 import { HackerNewsPost } from "./types";
 
 export interface State {
-  loading: boolean;
-  news: HackerNewsPost[];
-  error: string | null;
+  readonly loading: boolean;
+  readonly news: ReadonlyArray<HackerNewsPost>;
+  readonly error: string | null;
 }
 
 const initialState: State = {
@@ -29,7 +29,6 @@ export const reducer = createReducer(
       case getType(actions("news").fetchNews.failure): {
         draft.loading = false;
         const error = action.payload.error;
-        console.log(action);
         const defaultError = "Something went wrong";
         draft.error = typeof error === "string" ? error : defaultError;
         break;

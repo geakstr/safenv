@@ -21,10 +21,14 @@
     "build": "rm -rf ./lib && mkdir ./lib && rollup --config"
   },
   "peerDependencies": {
+    "@safenv/di": "^1.0.0",
     "immer": "^1.10.0",
     "typesafe-actions": "^3.0.0"
   },
-  "dependencies": {
-    "@safenv/di": "^1.0.0"
+  "devDependencies": {
+    "@safenv/di": "^1.0.0",
+    "immer": "^1.10.0",
+    "redux": "^4.0.1",
+    "typesafe-actions": "^3.0.0"
   }
 }

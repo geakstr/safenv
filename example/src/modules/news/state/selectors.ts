@@ -1,25 +1,27 @@
-import { createCachedSelector, createSelector } from "~/factory";
-import { RootState } from "~/state/reducers";
+import {
+  createMemoSelector,
+  createMemoSelectorWithArgs,
+  createSelector
+} from "~/factory";
 
-export const getLoading = (state: RootState) => {
+export const getLoading = createSelector(state => {
   return state.news.loading;
-};
+});
 
-export const getError = (state: RootState) => {
+export const getError = createSelector(state => {
   return state.news.error;
-};
+});
 
-export const getNews = (state: RootState) => {
+export const getNews = createSelector(state => {
   return state.news.news;
-};
+});
 
-export const getNewsIds = createSelector(
-  getNews,
-  news => news.map(item => item.id)
+export const getNewsIds = createMemoSelector(getNews, news =>
+  news.map(item => item.id)
 );
 
-export const getNewsItemById = createCachedSelector(
+export const getNewsItemById = createMemoSelectorWithArgs(
   getNews,
-  (_: RootState, id: string) => id,
+  createSelector((state, id: string) => id),
   (news, id) => news.find(item => item.id === id)
-)((_, id) => id);
+)((state, id) => id);

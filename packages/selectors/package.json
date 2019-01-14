@@ -1,7 +1,7 @@
 {
-  "name": "@safenv/di",
+  "name": "@safenv/selectors",
   "version": "1.0.0",
-  "description": "dependency injector for @safenv tools",
+  "description": "redux selectors helpers for @safenv tools",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",
   "repository": {
@@ -21,9 +21,11 @@
     "build": "rm -rf ./lib && mkdir ./lib && rollup --config"
   },
   "peerDependencies": {
-    "redux": "^4.0.0"
+    "reselect": "^4.0.0",
+    "re-reselect": "^2.3.0"
   },
   "devDependencies": {
-    "redux": "^4.0.0"
+    "reselect": "^4.0.0",
+    "re-reselect": "^2.3.0"
   }
 }

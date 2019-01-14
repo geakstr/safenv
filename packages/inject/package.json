@@ -21,10 +21,15 @@
     "build": "rm -rf ./lib && mkdir ./lib && rollup --config"
   },
   "peerDependencies": {
+    "@safenv/di": "^1.0.0",
     "react-redux": "^6.0.0",
     "redux": "^4.0.0"
   },
-  "dependencies": {
-    "@safenv/di": "^1.0.0"
+  "devDependencies": {
+    "@safenv/di": "^1.0.0",
+    "@types/react-redux": "^6.0.12",
+    "react": "^16.7.0",
+    "react-redux": "^6.0.0",
+    "redux": "^4.0.0"
   }
 }

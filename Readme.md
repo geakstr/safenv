@@ -1,3 +1,5 @@
+**safenv** or safe environment — set of tools to improve Developer Expirience with TypeScript, Redux, React and related stuff. It provides convenient ways to build typesafe application with less pain.
+
 ### Installation
 
 Tools provided by safenv are totally modular and you can use only things you need. With all features installation command looks like this:
@@ -109,7 +111,6 @@ It's time to figure out what's the purpose of `factory.ts`. It creates typesafe 
 
 ```ts
 import { createFactory } from "@safenv/factory";
-import createCachedSelector from "re-reselect";
 import { connect } from "react-redux";
 
 export const {
@@ -120,16 +121,16 @@ export const {
   createAction,
   createStandardAction,
   createAsyncAction,
-  createFetchAction
+  createFetchAction,
+  createSelector,
+  createMemoSelector,
+  createMemoSelectorWithArgs
 } = createFactory<
   import("./state/reducers").RootState,
   import("./state/actions").Actions,
   import("./state/selectors").Selectors,
   import("./state/extras").Extras
 >({ connect });
-
-export { createSelector } from "reselect";
-export { createCachedSelector };
 ```
 
 **IMPORTANT.** Note `createFactory` function call. It accepts 4 generics: `RootState`, `Actions`, `Selectors` and `Extras` — types from your `./state/*`. _You should not import anything except types from `./state/*` here_.
@@ -223,7 +224,7 @@ export interface HackerNewsPost {
 
 ##### Actions
 
-`modules/news/actions.ts` contains all news module related actions. All actions use <a href="https://github.com/piotrwitek/typesafe-actions">typesafe-actions</a> under the hood.
+`modules/news/actions.ts` contains all news module related actions. All actions use great <a href="https://github.com/piotrwitek/typesafe-actions">typesafe-actions</a> under the hood.
 
 ```ts
 import { createFetchAction } from "~/factory";
@@ -236,20 +237,20 @@ export const fetchNews = createFetchAction(
 )<HackerNewsPost[]>();
 ```
 
-`createFetchAction` creator from our `factory.ts` is similar to `createAsyncAction` but with extra logic inside. We marked `fetchNews` action with `HackerNewsPost[]` type as response body.
+`createFetchAction` creator from our `factory.ts` is similar to `createAsyncAction` but with extra logic inside. We marked `fetchNews` action with `HackerNewsPost[]` type as response payload.
 
 ##### Reducers
 
-`modules/news/reducers.ts` contains all news module related reducer, but in most cases only single reducer should be exported.
+`modules/news/reducers.ts` contains all news module related reducers. In most cases only single reducer should be exported.
 
 ```ts
 import { createReducer } from "~/factory";
 import { HackerNewsPost } from "./types";
 
 export interface State {
-  loading: boolean;
-  news: HackerNewsPost[];
-  error: string | null;
+  readonly loading: boolean;
+  readonly news: ReadonlyArray<HackerNewsPost>;
+  readonly error: string | null;
 }
 
 const initialState: State = {
@@ -286,6 +287,164 @@ export const reducer = createReducer(
 
 Note exported `State` type. All modules reducers should be described with some `State` type and export this type.
 
-Next `createReducer` helper. First callback provides _all actions_ from _all modules_ to the reducer function. So you can react on other modules action here. Also it provides `getType` helper from typesafe-actions. Next callback is actual reducer body and this will be wrapped with <a href="https://github.com/mweststrate/immer">immer</a> (so you can create the next immutable state tree by simply modifying the current tree). If you don't want to use `immer` you can import and use `createBasicReducer` from factory insted.
+Next `createReducer` helper. First callback provides _all actions_ from _all modules_ to the reducer function. So you can react on other modules actions in each reducer. Also it provides `getType` helper from typesafe-actions. Next callback is actual reducer body and this will be wrapped with <a href="https://github.com/mweststrate/immer">immer</a> (so you can create the next immutable state tree by simply modifying the current tree). If you don't want to use `immer` import and use `createBasicReducer` instead.
 
-Everytime you add module with actions/reducers/selectors you should add them to combined root state. Go to `./state/action
+Next the most interested part of reducers: with `getType` in `switch/case` `action` variable payload has right type in each cases. Big thanks to `typesafe-actions` again.
+
+##### Selectors
+
+`modules/news/selectors.ts` contains all news module related selectors. It uses great <a href="https://github.com/reduxjs/reselect">reselect</a> and <a href="https://github.com/toomuchdesign/re-reselect">re-reselect</a> ibraries.
+
+```ts
+import {
+  createMemoSelector,
+  createMemoSelectorWithArgs,
+  createSelector
+} from "~/factory";
+
+export const getLoading = createSelector(state => {
+  return state.news.loading;
+});
+
+export const getError = createSelector(state => {
+  return state.news.error;
+});
+
+export const getNews = createSelector(state => {
+  return state.news.news;
+});
+
+export const getNewsIds = createMemoSelector(getNews, news =>
+  news.map(item => item.id)
+);
+
+export const getNewsItemById = createMemoSelectorWithArgs(
+  getNews,
+  createSelector((state, id: string) => id),
+  (news, id) => news.find(item => item.id === id)
+)((state, id) => id);
+```
+
+Note all the `state` args are properly typed with `RootState` type.
+
+##### Components
+
+Now it's time to connect react component with redux state. `modules/news/News.tsx` component with comments:
+
+```ts
+import * as React from "react";
+// Import `inject` helper to connect react with redux state
+import { inject } from "~/factory";
+import { NewsItem } from "./NewsItem";
+import { HackerNewsPost } from "./state/types";
+
+// `inject` it's a just wrapper on the top of react-redux `connect` function
+//
+// `inject` automatically provides actions/selectors/extras
+// all of them are not objects, but lazy functions and
+// they accept appropriate actions/state key ("news" here)
+//
+// `mapState` is react-redux `mapStateToProps`
+// `mapActions` is almost the same react-redux `mapDispatchToProps`
+const injector = inject(({ actions, selectors, extras }) => ({
+  mapState: state => ({
+    // as usual map state to props with selectors
+    loading: selectors("news").getLoading(state),
+    error: selectors("news").getError(state),
+    newsIds: selectors("news").getNewsIds(state),
+    // also it's possible to pass any extras here
+    fetch: extras().fetch
+  }),
+  mapActions: {
+    // Not that `fetchNews` action produced with `createFetchAction`
+    // and contains three actions: request, success, failure.
+    // For automatic fetch lifecycle with redux middleware
+    // `request` action should be dispatched
+    fetchNews: actions("news").fetchNews.request
+  }
+}));
+
+// We need to infer Props Type manually because TypeScript
+// will not set React.Component<Props> generic type automatically.
+// @safenv/inject provides convinient `InjectedProps` type for that.
+// It can be omitted with functional components though.
+type Props = import("@safenv/inject").InjectedProps<typeof injector>;
+
+// Wrap component with injector HOC as usual with react-redux `connect`
+export const News = injector(
+  class NewsComponent extends React.Component<Props> {
+    componentDidMount() {
+      // Use our request action mapped in `mapActions`
+      this.props.fetchNews({
+        // Fetch instance configured with `baseUrl` so only rest path needed
+        url: "/topstories.json",
+        handlers: {
+          // It's possible to intercept and modify response here.
+          // Without this handler response body will passed to reducer as is
+          onSuccess: async (response: Response) => {
+            // Fetch data for every hackernews post id
+            const ids: string[] = await response.json();
+            const promises = ids.slice(0, 10).map(id => {
+              return new Promise<HackerNewsPost>((resolve, reject) => {
+                // this `fetch` comes from extras/
+                // it's improved typesafe version of Fetch API.
+                // HackerNewsPost used to type responsed json
+                this.props.fetch
+                  .request<HackerNewsPost>(`/item/${id}.json`)
+                  .then(response => resolve(response.json()))
+                  .catch(reject);
+              });
+            });
+            // Return array of fetched hacker news posts
+            return Promise.all(promises);
+          }
+        }
+      });
+    }
+    render() {
+      const { loading, error, newsIds } = this.props;
+      const ready = Boolean(!loading && !error);
+      return (
+        <div className="app-wrapper">
+          <h2>Top 10 Hacker News</h2>
+          {loading && (
+            <div className="news-wrapper news-loading">Loading...</div>
+          )}
+          {error && <div className="news-wrapper news-error">{error}</div>}
+          {ready && (
+            <div className="news-wrapper">
+              {newsIds.map(id => (
+                // each post is NewsItem component
+                <NewsItem id={id} key={id} />
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+  }
+);
+```
+
+And `modules/news/NewsItem.tsx`:
+
+```ts
+import * as React from "react";
+import { inject } from "~/factory";
+
+// Shortand `inject` usage with functional component
+export const NewsItem = inject(({ selectors }) => ({
+  mapState: (state, props: { id: string }) => ({
+    // use cached selector with `id` as argument
+    item: selectors("news").getNewsItemById(state, props.id)
+  })
+}))(props => {
+  return (
+    <div className="news-post">
+      <h3>
+        <a href={props.item.url}>{props.item.title}</a>
+      </h3>
+    </div>
+  );
+});
+```
