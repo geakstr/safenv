@@ -1,6 +1,6 @@
 {
   "name": "@safenv/selectors",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "redux selectors helpers for @safenv tools",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",
@@ -21,11 +21,11 @@
     "build": "rm -rf ./lib && mkdir ./lib && rollup --config"
   },
   "peerDependencies": {
-    "reselect": "^4.0.0",
-    "re-reselect": "^2.3.0"
+    "re-reselect": "^2.3.0",
+    "reselect": "^4.0.0"
   },
   "devDependencies": {
-    "reselect": "^4.0.0",
-    "re-reselect": "^2.3.0"
+    "re-reselect": "^2.3.0",
+    "reselect": "^4.0.0"
   }
 }
