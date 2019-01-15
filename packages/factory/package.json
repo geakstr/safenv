@@ -1,6 +1,6 @@
 {
   "name": "@safenv/factory",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "helper to setup @safenv utils",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",
@@ -39,7 +39,7 @@
     "@safenv/di": "^1.3.3",
     "@safenv/fetch": "^1.3.3",
     "@safenv/inject": "^1.3.3",
-    "@safenv/reducers": "^1.3.3",
+    "@safenv/reducers": "^1.4.1",
     "@safenv/selectors": "^1.4.0",
     "@types/react": "^16.7.18",
     "immer": "^1.10.0",
