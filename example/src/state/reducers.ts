@@ -8,5 +8,5 @@ export const createRootReducer = () => {
 };
 
 export interface RootState {
-  readonly news: import("../modules/news/state/reducers").State;
+  readonly news: ReturnType<typeof news.reducer>;
 }

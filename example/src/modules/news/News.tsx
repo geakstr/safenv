@@ -22,7 +22,7 @@ const injector = inject(({ actions, selectors, extras }) => ({
     fetch: extras().fetch
   }),
   mapActions: {
-    // Not that `fetchNews` action produced with `createFetchAction`
+    // Note that `fetchNews` action produced with `createFetchAction`
     // and contains three actions: request, success, failure.
     // For automatic fetch lifecycle with redux middleware
     // `request` action should be dispatched
@@ -46,7 +46,7 @@ export const News = injector(
         url: "/topstories.json",
         handlers: {
           // It's possible to intercept and modify response here.
-          // Without this handler response body will passed to reducer as is
+          // Without this handler response body will be passed to reducer as is
           onSuccess: async (response: Response) => {
             // Fetch data for every hackernews post id
             const ids: string[] = await response.json();

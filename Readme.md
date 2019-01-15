@@ -363,7 +363,7 @@ export const createRootReducer = () => {
 };
 
 export interface RootState {
-  readonly news: import("../modules/news/state/reducers").State;
+  readonly news: ReturnType<typeof news.reducer>;
 }
 ```
 
@@ -396,7 +396,7 @@ import { HackerNewsPost } from "./state/types";
 //
 // `inject` automatically provides actions/selectors/extras
 // all of them are not objects, but lazy functions and
-// they accept appropriate actions/state key ("news" here)
+// they accept appropriate actions/state/extras key ("news" here)
 //
 // `mapState` is react-redux `mapStateToProps`
 // `mapActions` is almost the same react-redux `mapDispatchToProps`
@@ -410,7 +410,7 @@ const injector = inject(({ actions, selectors, extras }) => ({
     fetch: extras().fetch
   }),
   mapActions: {
-    // Not that `fetchNews` action produced with `createFetchAction`
+    // Note that `fetchNews` action produced with `createFetchAction`
     // and contains three actions: request, success, failure.
     // For automatic fetch lifecycle with redux middleware
     // `request` action should be dispatched
@@ -420,7 +420,7 @@ const injector = inject(({ actions, selectors, extras }) => ({
 
 // We need to infer Props Type manually because TypeScript
 // will not set React.Component<Props> generic type automatically.
-// @safenv/inject provides convinient `InjectedProps` type for that.
+// And @safenv/inject provides convinient `InjectedProps` type for that.
 // It can be omitted with functional components though.
 type Props = import("@safenv/inject").InjectedProps<typeof injector>;
 
@@ -434,7 +434,7 @@ export const News = injector(
         url: "/topstories.json",
         handlers: {
           // It's possible to intercept and modify response here.
-          // Without this handler response body will passed to reducer as is
+          // Without this handler response body will be passed to reducer as is
           onSuccess: async (response: Response) => {
             // Fetch data for every hackernews post id
             const ids: string[] = await response.json();
