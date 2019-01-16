@@ -238,7 +238,32 @@ export const fetchNews = createFetchAction(
   "fetch-news/request",
   "fetch-news/success",
   "fetch-news/failure"
-)<HackerNewsPost[]>();
+)<{ limit: number }, HackerNewsPost[]>(({ limit }, { extras }) => ({
+  // fetch instance from extras configured with baseUrl so only rest path needed
+  url: "/topstories.json",
+
+  // It's possible to intercept and modify response
+  handlers: {
+    // Without this handler response body will be passed to reducer as is
+    onSuccess: async (response: Response) => {
+      // Fetch data for every hackernews post id
+      const ids: string[] = await response.json();
+      const promises = ids.slice(0, limit).map(id => {
+        return new Promise<HackerNewsPost>((resolve, reject) => {
+          // this `fetch` comes from extras/
+          // it's improved typesafe version of Fetch API.
+          // HackerNewsPost used to type responsed json
+          extras()
+            .fetch.request<HackerNewsPost>(`/item/${id}.json`)
+            .then(response => resolve(response.json()))
+            .catch(reject);
+        });
+      });
+      // Return array of fetched hacker news posts
+      return Promise.all(promises);
+    }
+  }
+}));
 ```
 
 `createFetchAction` creator from our `factory.ts` is similar to `createAsyncAction` but with extra logic inside. We marked `fetchNews` action with `HackerNewsPost[]` type as response payload.
@@ -390,7 +415,6 @@ import * as React from "react";
 // Import `inject` helper to connect react with redux state
 import { inject } from "~/factory";
 import { NewsItem } from "./NewsItem";
-import { HackerNewsPost } from "./state/types";
 
 // `inject` it's a just wrapper on the top of react-redux `connect` function
 //
@@ -400,14 +424,12 @@ import { HackerNewsPost } from "./state/types";
 //
 // `mapState` is react-redux `mapStateToProps`
 // `mapActions` is almost the same react-redux `mapDispatchToProps`
-const injector = inject(({ actions, selectors, extras }) => ({
+const injector = inject(({ actions, selectors }) => ({
   mapState: state => ({
     // as usual map state to props with selectors
     loading: selectors("news").getLoading(state),
     error: selectors("news").getError(state),
-    newsIds: selectors("news").getNewsIds(state),
-    // also it's possible to pass any extras here
-    fetch: extras().fetch
+    newsIds: selectors("news").getNewsIds(state)
   }),
   mapActions: {
     // Note that `fetchNews` action produced with `createFetchAction`
@@ -428,32 +450,8 @@ type Props = import("@safenv/inject").InjectedProps<typeof injector>;
 export const News = injector(
   class NewsComponent extends React.Component<Props> {
     componentDidMount() {
-      // Use our request action mapped in `mapActions`
-      this.props.fetchNews({
-        // Fetch instance configured with `baseUrl` so only rest path needed
-        url: "/topstories.json",
-        handlers: {
-          // It's possible to intercept and modify response here.
-          // Without this handler response body will be passed to reducer as is
-          onSuccess: async (response: Response) => {
-            // Fetch data for every hackernews post id
-            const ids: string[] = await response.json();
-            const promises = ids.slice(0, 10).map(id => {
-              return new Promise<HackerNewsPost>((resolve, reject) => {
-                // this `fetch` comes from extras/
-                // it's improved typesafe version of Fetch API.
-                // HackerNewsPost used to type responsed json
-                this.props.fetch
-                  .request<HackerNewsPost>(`/item/${id}.json`)
-                  .then(response => resolve(response.json()))
-                  .catch(reject);
-              });
-            });
-            // Return array of fetched hacker news posts
-            return Promise.all(promises);
-          }
-        }
-      });
+      // Request action mapped in `mapActions`
+      this.props.fetchNews({ args: { limit: 10 } });
     }
     render() {
       const { loading, error, newsIds } = this.props;

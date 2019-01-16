@@ -41,6 +41,7 @@ export const createFactory = <RootState, Actions, Selectors, Extras>(
   const createAsyncAction = createAsyncActionCreator();
   const { skipFetchActionMiddleware = false } = options;
   const createFetchAction = createFetchActionCreator(
+    provider,
     createStandardAction,
     skipFetchActionMiddleware
   );

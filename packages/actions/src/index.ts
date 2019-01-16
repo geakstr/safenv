@@ -1,4 +1,7 @@
+import { Provider } from "@safenv/di";
 import { TypedResponse } from "@safenv/fetch";
+import * as deepmerge from "deepmerge";
+import * as isPlainObject from "is-plain-object";
 import { AnyAction, Dispatch, Store } from "redux";
 import * as tsa from "typesafe-actions";
 
@@ -26,7 +29,8 @@ export const createAsyncActionCreator = () => {
   });
 };
 
-export const createFetchActionCreator = (
+export const createFetchActionCreator = <Extras>(
+  provider: Provider<any, any, any, Extras>,
   createStandardAction: CreateStandardAction,
   argSkipMiddleware: boolean = false
 ) => {
@@ -38,33 +42,68 @@ export const createFetchActionCreator = (
     request: RequestType,
     success: SuccessType,
     failure: FailureType
-  ) => <Body, Err = any>() => {
-    type RequestPayload = FetchRequestConfig & Handlers<Body, Err>;
+  ) => <RequestArgs, Body>(
+    requestPayloadCreator: (
+      args: RequestArgs,
+      provided: { readonly extras: () => Extras }
+    ) => FetchRequestConfig & Handlers<Body>
+  ) => {
     const successAction = createStandardAction(success).map(
-      (payload: SuccessPayload<Body>, requestPayload: RequestPayload) => ({
+      (
+        payload: SuccessPayload<Body>,
+        requestAction: RequestAction<Body, RequestArgs>
+      ) => ({
         payload,
         meta: {
           marker: "@@safenv/fetch-action/success",
-          request: requestPayload
+          requestAction
         }
       })
     );
+
     const failureAction = createStandardAction(failure).map(
-      (payload: FailurePayload<Err>, requestPayload: RequestPayload) => ({
+      (
+        payload: FailurePayload,
+        requestAction: RequestAction<Body, RequestArgs>
+      ) => ({
         payload,
         meta: {
           marker: "@@safenv/fetch-action/failure",
-          request: requestPayload
+          requestAction
         }
       })
     );
+
     const requestAction = createStandardAction(request).map(
-      (payload: RequestPayload) => {
-        const { skipMiddleware = argSkipMiddleware, ...restPayload } = payload;
+      (providedParams: {
+        readonly args: FirstArgument<typeof requestPayloadCreator>;
+        readonly extendRequest?: RequestPayload<Body>;
+        readonly callbacks?: RequestCallbacks<Body>;
+      }) => {
+        const { args, extendRequest, callbacks } = providedParams;
+        const payload = requestPayloadCreator(args, {
+          extras: provider.extras
+        });
+        let finalPayload = payload;
+        if (extendRequest) {
+          finalPayload = deepmerge.all([payload, extendRequest], {
+            isMergeableObject: isPlainObject,
+            arrayMerge: (destinationArray, sourceArray, options) => sourceArray
+          }) as RequestPayload<Body>;
+        }
+        if (!finalPayload.url) {
+          throw new Error(`${request} action requires url`);
+        }
+        const {
+          skipMiddleware = argSkipMiddleware,
+          ...actualPayload
+        } = finalPayload;
         return {
-          payload: restPayload,
+          payload: actualPayload,
           meta: {
             skipMiddleware,
+            args,
+            callbacks,
             marker: "@@safenv/fetch-action/request",
             success: successAction,
             failure: failureAction
@@ -83,15 +122,14 @@ export const createFetchActionCreator = (
 export function markDispatched<
   T,
   Body,
-  Err,
-  A extends { type: T; payload: FetchRequestConfig & Handlers<Body, Err> }
->(something: A): RequestDispatchResult<Body, Err> {
-  return (something as any) as RequestDispatchResult<Body, Err>;
+  A extends { type: T; payload: FetchRequestConfig & Handlers<Body> }
+>(something: A): RequestDispatchResult<Body> {
+  return (something as any) as RequestDispatchResult<Body>;
 }
 
-export interface RequestDispatchResult<Body, Err> {
+export interface RequestDispatchResult<Body> {
   readonly type: string;
-  readonly payload: FetchRequestConfig & Handlers<Body, Err>;
+  readonly payload: FetchRequestConfig & Handlers<Body>;
   readonly cancel: () => void;
 }
 
@@ -102,7 +140,7 @@ export const createFetchActionMiddleware = (
   ) => Promise<Response | TypedResponse<any>>
 ) => <RootState>(store: Store<RootState, AnyAction>) => (next: Dispatch) => (
   action: AnyAction
-): AnyAction | RequestDispatchResult<any, any> => {
+): AnyAction | RequestDispatchResult<any> => {
   if (
     typeof action.meta !== "object" ||
     action.meta.marker !== "@@safenv/fetch-action/request"
@@ -113,7 +151,7 @@ export const createFetchActionMiddleware = (
     return next(action);
   }
   let cancelled = false;
-  const payload: FetchRequestConfig & Handlers<any, any> = action.payload;
+  const payload: FetchRequestConfig & Handlers<any> = action.payload;
   const { format = "json", url, handlers: resolvers } = payload;
   const controller = new AbortController();
   const config = {
@@ -132,7 +170,11 @@ export const createFetchActionMiddleware = (
         }
         return promise.then(body => {
           if (!cancelled) {
-            store.dispatch(action.meta.success({ body, response }, payload));
+            const successPayload = { body, response };
+            if (action.meta.callbacks && action.meta.callbacks.onSuccess) {
+              action.meta.callbacks.onSuccess(successPayload);
+            }
+            store.dispatch(action.meta.success(successPayload, action));
           }
         });
       } else {
@@ -142,7 +184,11 @@ export const createFetchActionMiddleware = (
         }
         return promise.then(error => {
           if (!cancelled) {
-            store.dispatch(action.meta.failure({ error, response }, payload));
+            const failurePayload = { error, response };
+            if (action.meta.callbacks && action.meta.callbacks.onFailure) {
+              action.meta.callbacks.onFailure(failurePayload);
+            }
+            store.dispatch(action.meta.failure(failurePayload, action));
           }
         });
       }
@@ -155,9 +201,11 @@ export const createFetchActionMiddleware = (
       }
       errorPromise.then(error => {
         if (!cancelled) {
-          store.dispatch(
-            action.meta.failure({ error, response: undefined }, payload)
-          );
+          const failurePayload = { error };
+          if (action.meta.callbacks && action.meta.callbacks.onFailure) {
+            action.meta.callbacks.onFailure(failurePayload);
+          }
+          store.dispatch(action.meta.failure(failurePayload, action));
         }
       });
     });
@@ -172,17 +220,17 @@ export const createFetchActionMiddleware = (
 
 export interface FetchRequestConfig {
   readonly format?: "json" | "blob" | "text";
-  readonly url: string;
+  readonly url?: string;
   readonly config?: RequestInit;
   readonly skipMiddleware?: boolean;
 }
 
-export interface Handlers<Body, Err> {
+export interface Handlers<Body> {
   readonly handlers?: {
     readonly onSuccess?: (
       response: TypedResponse<Body>
     ) => Promise<Body> | Body;
-    readonly onFailure?: (response: TypedResponse<any>) => Promise<Err> | Err;
+    readonly onFailure?: (response: TypedResponse<any>) => Promise<any> | any;
   };
 }
 
@@ -191,13 +239,32 @@ export interface SuccessPayload<Body> {
   readonly body: Body;
 }
 
-export interface FailurePayload<Err> {
+export interface FailurePayload {
   readonly response: Response;
-  readonly error: Err;
+  readonly error: any;
 }
 
 export interface CreateFetchActionCreatorOptions {
   readonly skipMiddleware?: boolean;
+}
+
+export interface RequestCallbacks<Body> {
+  readonly onSuccess?: (body: Body) => void;
+  readonly onFailure?: (error: any) => void;
+}
+export type RequestPayload<Body> = FetchRequestConfig & Handlers<Body>;
+export interface RequestMeta<RequestArgs, RequestCallbacks> {
+  skipMiddleware: boolean;
+  args: RequestArgs;
+  callbacks?: RequestCallbacks;
+  marker: "@@safenv/fetch-action/request";
+  success: (...args: any[]) => any;
+  failure: (...args: any[]) => any;
+}
+export interface RequestAction<Body, RequestArgs> {
+  readonly type: string;
+  readonly payload: RequestPayload<Body>;
+  readonly meta: RequestMeta<RequestArgs, RequestCallbacks<Body>>;
 }
 
 const cache: { [key: string]: boolean } = {};
@@ -213,3 +280,7 @@ const check = (types: string[]) => {
 };
 
 type CreateStandardAction = ReturnType<typeof createStandardActionCreator>;
+
+type FirstArgument<T> = T extends (arg1: infer U, ...args: any[]) => any
+  ? U
+  : any;
