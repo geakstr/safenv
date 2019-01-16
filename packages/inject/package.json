@@ -1,6 +1,6 @@
 {
   "name": "@safenv/inject",
-  "version": "1.3.3",
+  "version": "1.5.1",
   "description": "better react-redux `connect` for @safenv tools",
   "author": "Dmitry Kharitonov <geakstr@me.com>",
   "license": "MIT",
