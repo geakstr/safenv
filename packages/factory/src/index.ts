@@ -17,7 +17,7 @@ import {
   RootSelector,
   RootSelectorWithArgs
 } from "@safenv/selectors";
-import { Draft, Immutable } from "immer";
+import { Draft, Immutable, Produced } from "immer";
 import createMemoSelectorWithArgs from "re-reselect";
 import { ActionCreatorsMapObject, AnyAction, Dispatch, Store } from "redux";
 import { createSelector as createMemoSelector } from "reselect";
@@ -76,6 +76,7 @@ export interface CreateFactoryOptions {
 type TypedResponseTypeRequire = TypedResponse<any>;
 type ProviderTypeRequire = Provider<any, any, any, any>;
 type DraftRequire = Draft<any>;
+type ProducedRequire = Produced<any, any>;
 type DispatchRequire = Dispatch;
 type AnyActionRequire = AnyAction;
 type StoreRequire = Store;
