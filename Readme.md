@@ -388,7 +388,7 @@ export const createRootReducer = () => {
 };
 
 export interface RootState {
-  readonly news: ReturnType<typeof news.reducer>;
+  readonly news: import("~/modules/news/state/reducers").State;
 }
 ```
 
