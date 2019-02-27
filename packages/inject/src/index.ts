@@ -84,13 +84,11 @@ export type Injector<
   StateProps = {},
   DispatchProps extends ActionCreatorsMapObject = {},
   OwnProps = {}
-> = (
-  args: {
-    actions<K extends keyof Actions>(key: K): Actions[K];
-    selectors<K extends keyof Selectors>(key: K): Selectors[K];
-    extras: () => Extras;
-  }
-) => ConnectMappers<RootState, StateProps, DispatchProps, OwnProps>;
+> = (args: {
+  actions(): Actions;
+  selectors(): Selectors;
+  extras: () => Extras;
+}) => ConnectMappers<RootState, StateProps, DispatchProps, OwnProps>;
 
 type FirstArgument<T> = T extends (arg1: infer U, ...args: any[]) => any
   ? U

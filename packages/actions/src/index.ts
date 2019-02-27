@@ -249,7 +249,10 @@ export interface CreateFetchActionCreatorOptions {
 }
 
 export interface RequestCallbacks<Body> {
-  readonly onSuccess?: (body: Body) => void;
+  readonly onSuccess?: (x: {
+    readonly body: Body;
+    readonly response: TypedResponse<Body>;
+  }) => void;
   readonly onFailure?: (error: any) => void;
 }
 export type RequestPayload<Body> = FetchRequestConfig & Handlers<Body>;

@@ -7,23 +7,23 @@ import { NewsItem } from "./NewsItem";
 //
 // `inject` automatically provides actions/selectors/extras
 // all of them are not objects, but lazy functions and
-// they accept appropriate actions/state/extras key ("news" here)
+// they return actions/state/extras objects under keys ("news" here)
 //
 // `mapState` is react-redux `mapStateToProps`
 // `mapActions` is almost the same react-redux `mapDispatchToProps`
-const injector = inject(({ actions, selectors }) => ({
+const injector = inject(({ actions, selectors, extras }) => ({
   mapState: state => ({
     // as usual map state to props with selectors
-    loading: selectors("news").getLoading(state),
-    error: selectors("news").getError(state),
-    newsIds: selectors("news").getNewsIds(state)
+    loading: selectors().news.getLoading(state),
+    error: selectors().news.getError(state),
+    newsIds: selectors().news.getNewsIds(state)
   }),
   mapActions: {
     // Note that `fetchNews` action produced with `createFetchAction`
     // and contains three actions: request, success, failure.
     // For automatic fetch lifecycle with redux middleware
     // `request` action should be dispatched
-    fetchNews: actions("news").fetchNews.request
+    fetchNews: actions().news.fetchNews.request
   }
 }));
 

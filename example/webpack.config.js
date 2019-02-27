@@ -9,7 +9,7 @@ module.exports = {
   mode: "development",
   devServer: {
     port: 3000,
-    contentBase: path.join(__dirname, "dist"),
+    contentBase: path.join(__dirname, "lib"),
     compress: true,
     hot: true,
     watchContentBase: true,
@@ -39,7 +39,7 @@ module.exports = {
   },
   output: {
     filename: "bundle.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "lib")
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

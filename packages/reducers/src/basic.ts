@@ -11,10 +11,8 @@ export const createBasicReducerCreator = <Actions, Extras>(
   });
 };
 
-export type ReducerCreator<State, Actions, Extras> = (
-  args: {
-    readonly actions: <K extends keyof Actions>(key: K) => Actions[K];
-    readonly extras: () => Extras;
-    readonly getType: typeof typesafeGetType;
-  }
-) => (state: State, action: ActionType<Actions>) => void | State;
+export type ReducerCreator<State, Actions, Extras> = (args: {
+  readonly actions: () => Actions;
+  readonly extras: () => Extras;
+  readonly getType: typeof typesafeGetType;
+}) => (state: State, action: ActionType<Actions>) => void | State;

@@ -291,17 +291,17 @@ const initialState: State = {
 export const reducer = createReducer(
   ({ actions, getType }) => (draft, action) => {
     switch (action.type) {
-      case getType(actions("news").fetchNews.request): {
+      case getType(actions().news.fetchNews.request): {
         draft.loading = true;
         break;
       }
-      case getType(actions("news").fetchNews.success): {
+      case getType(actions().news.fetchNews.success): {
         draft.loading = false;
         draft.news = action.payload.body;
         draft.error = null;
         break;
       }
-      case getType(actions("news").fetchNews.failure): {
+      case getType(actions().news.fetchNews.failure): {
         draft.loading = false;
         const error = action.payload.error;
         const defaultError = "Something went wrong";
@@ -420,23 +420,23 @@ import { NewsItem } from "./NewsItem";
 //
 // `inject` automatically provides actions/selectors/extras
 // all of them are not objects, but lazy functions and
-// they accept appropriate actions/state/extras key ("news" here)
+// they return actions/state/extras objects under keys ("news" here)
 //
 // `mapState` is react-redux `mapStateToProps`
 // `mapActions` is almost the same react-redux `mapDispatchToProps`
-const injector = inject(({ actions, selectors }) => ({
+const injector = inject(({ actions, selectors, extras }) => ({
   mapState: state => ({
     // as usual map state to props with selectors
-    loading: selectors("news").getLoading(state),
-    error: selectors("news").getError(state),
-    newsIds: selectors("news").getNewsIds(state)
+    loading: selectors().news.getLoading(state),
+    error: selectors().news.getError(state),
+    newsIds: selectors().news.getNewsIds(state)
   }),
   mapActions: {
     // Note that `fetchNews` action produced with `createFetchAction`
     // and contains three actions: request, success, failure.
     // For automatic fetch lifecycle with redux middleware
     // `request` action should be dispatched
-    fetchNews: actions("news").fetchNews.request
+    fetchNews: actions().news.fetchNews.request
   }
 }));
 
@@ -453,6 +453,7 @@ export const News = injector(
       // Request action mapped in `mapActions`
       this.props.fetchNews({ args: { limit: 10 } });
     }
+
     render() {
       const { loading, error, newsIds } = this.props;
       const ready = Boolean(!loading && !error);
@@ -488,7 +489,7 @@ import { inject } from "~/factory";
 export const NewsItem = inject(({ selectors }) => ({
   mapState: (state, props: { id: string }) => ({
     // use cached selector with `id` as argument
-    item: selectors("news").getNewsItemById(state, props.id)
+    item: selectors().news.getNewsItemById(state, props.id)
   })
 }))(props => {
   return (

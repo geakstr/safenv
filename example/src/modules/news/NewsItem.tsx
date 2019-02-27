@@ -5,7 +5,7 @@ import { inject } from "~/factory";
 export const NewsItem = inject(({ selectors }) => ({
   mapState: (state, props: { id: string }) => ({
     // use cached selector with `id` as argument
-    item: selectors("news").getNewsItemById(state, props.id)
+    item: selectors().news.getNewsItemById(state, props.id)
   })
 }))(props => {
   return (

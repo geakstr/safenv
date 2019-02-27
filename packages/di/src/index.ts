@@ -6,11 +6,11 @@ export const createProvider = <RootState, Actions, Selectors, Extras>() => {
     store() {
       return storage.store;
     },
-    actions(key) {
-      return storage.actions[key];
+    actions() {
+      return storage.actions;
     },
-    selectors(key) {
-      return storage.selectors[key];
+    selectors() {
+      return storage.selectors;
     },
     extras() {
       return storage.extras;
@@ -35,8 +35,8 @@ export const createProvider = <RootState, Actions, Selectors, Extras>() => {
 
 export interface Provider<RootState, Actions, Selectors, Extras> {
   store(): Store<RootState, AnyAction>;
-  actions<K extends keyof Actions>(key: K): Actions[K];
-  selectors<K extends keyof Selectors>(key: K): Selectors[K];
+  actions(): Actions;
+  selectors(): Selectors;
   extras(): Extras;
   runWith(
     ctx: ProviderContext<RootState, Actions, Selectors, Extras>,
