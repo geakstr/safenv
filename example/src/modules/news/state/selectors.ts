@@ -23,6 +23,6 @@ export const getNewsIds = createMemoSelector(getNews, news =>
 
 export const getNewsItemById = createMemoSelectorWithArgs(
   getNews,
-  createSelectorWithArgs((state, id: string) => id),
+  createSelectorWithArgs((_, id: string) => id),
   (news, id) => news.find(item => item.id === id)
-)((state, id) => id);
+)((_, id) => id);
