@@ -42,7 +42,7 @@
     "@safenv/reducers": "^1.6.0",
     "@safenv/selectors": "^1.4.0",
     "@types/react": "16.7.20",
-    "immer": "1.10.5",
+    "immer": "8.0.1",
     "re-reselect": "^2.3.0",
     "react": "^16.7.0",
     "react-redux": "^6.0.0",
