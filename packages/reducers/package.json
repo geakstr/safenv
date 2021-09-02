@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@safenv/di": "^1.6.0",
-    "immer": "1.10.5",
+    "immer": "9.0.6",
     "redux": "^4.0.1",
     "typesafe-actions": "^3.0.0"
   },
